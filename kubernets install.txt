@@ -1,0 +1,70 @@
+  hostname master
+    2  vim /etc/hostname
+    3  vi /etc/hostname
+    4  vi /etc/hosts
+    5  exit
+    6  setenforce 0
+    7  vi /etc/selinux/config
+    8  reboot
+    9  getenforce
+   10  vi /etc/yum.repos.d/docker-ce.repo
+   11  yum install docker-ce -y
+   12  systemctl start docker
+   13  systemctl enable docker
+   14  systemctl status docker
+   15  cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+   16  [kubernetes]
+   17  name=Kubernetes
+   18  baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+   19  enabled=1
+   20  gpgcheck=1
+   21  gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+   22  exclude=kubelet kubeadm kubectl
+   23  EOF
+   24  setenforce 0
+   25  sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+   26  yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+   27  systemctl enable --now kubelet
+   28  mkdir /etc/docker
+   29  cat <<EOF | sudo tee /etc/docker/daemon.json
+   30  {
+   31    "exec-opts": ["native.cgroupdriver=systemd"],
+   32    "log-driver": "json-file",
+   33    "log-opts": {
+   34      "max-size": "100m"
+   35    },
+   36    "storage-driver": "overlay2"
+   37  }
+   38  EOF
+   39  systemctl enable docker
+   40  systemctl daemon-reload
+   41  systemctl restart docker
+   42  rm -f /etc/containerd/config.toml ; systemctl restart containerd
+   43  kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=192.168.0.20
+   44   export KUBECONFIG=/etc/kubernetes/admin.conf
+   45  exit
+   46  wget h
+   47  yum install wget -y
+   48  wget h
+   49  wget https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+   50  vi kube-flannel.yml
+   51  kubectl create -f kube-flannel.yml
+   52  export KUBECONFIG=/etc/kubernetes/admin.conf
+   53  kubectl create -f kube-flannel.yml
+   54  kubectl get nodes
+   55  kubectl restart kubelet
+   56  systemctl restart kubelet
+   57  export KUBECONFIG=/etc/kubernetes/admin.conf
+   58  kubectl create -f kube-flannel.yml
+   59  export KUBECONFIG=/etc/kubernetes/admin.conf
+   60  kubectl create -f kube-flannel.yml
+   61  systemctl restart kubelet
+   62  systemctl daemon-reload
+   63  free -m
+   64  swapoff -a\
+   65  swapoff -a
+   66  free -m
+   67  kubectl create -f kube-flannel.yml
+   68  kubectl get nodes
+   69  vi kube-flannel.yml
+   70  history
